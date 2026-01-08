@@ -1,0 +1,10 @@
+{
+  "name": "esafunctions",
+  "installCommand": "pnpm install",
+  "buildCommand": "pnpm build",
+  "entry": "./dist/main.js",
+  "assets": {
+    "directory": "./dist",
+    "notFoundStrategy": "404Page"
+  }
+}
