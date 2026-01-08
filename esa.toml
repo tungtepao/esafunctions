@@ -1,6 +1,8 @@
 name = "esafunctions"
 description = "Hello World"
-entry = "src/index.js"
+entry = "./dist/main.js"
+installCommand = "pnpm install"
+buildCommand = "pnpm build"
 codeVersions = [ ]
 
 [dev]
