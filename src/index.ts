@@ -1,22 +1,38 @@
+import { UserService } from './user/index.js';
+import { AutoRouter } from 'itty-router';
+
+const userService = new UserService();
+
+// 创建 itty-router 实例
+const router = AutoRouter();
+
+// 使用 itty-router 定义路由
+router.get('/user/:userid', async (request: Request) => {
+  const userid = request.params?.userid;
+  const result = await userService.getUser(userid);
+  return Response.json(result);
+});
+
+router.post('/user', async (request: Request) => {
+  try {
+    const body = await request.json();
+    const result = await userService.createUser(body);
+    return Response.json(result);
+  } catch (error) {
+    return Response.json({ error: 'Invalid JSON' }, { status: 400 });
+  }
+});
+
+router.get('/hello', () => {
+  return Response.json({ hello: "esa" });
+});
+
+router.post('/message', async (request: Request) => {
+  await request.json();
+  return Response.json({ code: 200 });
+});
+
+// 导出 fetch 函数供 serverless 环境使用
 export default {
-  fetch(request: Request) {
-    return handleRequest(request)
-  }
-}
-
-async function handleRequest(request: Request): Promise<Response> {
-  const url = new URL(request.url);
-  const path = url.pathname;
-  const method = request.method;
-
-  if (method === "GET" && path === "/hello") {
-    return Response.json({ hello: "esa" });
-  }
-
-  if (method === "POST" && path === "/message") {
-    await request.json();
-    return Response.json({ code: 200 });
-  }
-
-  return new Response("Not Found", { status: 404 });
-}
+  fetch: router.fetch
+};
