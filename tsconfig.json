@@ -10,7 +10,10 @@
     "module": "esnext",
     "target": "esnext",
     "types": [],
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
@@ -22,8 +25,8 @@
     "declarationMap": true,
 
     // Stricter Typechecking Options
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": false,
+    "exactOptionalPropertyTypes": false,
 
     // Style Options
     // "noImplicitReturns": true,
@@ -37,9 +40,8 @@
     "strict": true,
     "jsx": "react-jsx",
     //"verbatimModuleSyntax": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
   }
 }
