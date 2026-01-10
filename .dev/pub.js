@@ -1,17 +1,50 @@
 // dist/index.js
+async function getFromKV(kv, key) {
+  try {
+    const edgeKV = new EdgeKV({ namespace: kv });
+    let getType = { type: "text" };
+    let value = await edgeKV.get(key, getType);
+    if (!value) {
+      return null;
+    }
+    return JSON.parse(value);
+  } catch (error) {
+    console.error(`Error getting key ${key} from KV:`, error);
+    throw error;
+  }
+}
 var UserService = class {
+  kvNamespace = "web";
   // GET /user/{userid}
   async getUser(userid) {
-    return {
-      userid,
-      name: "test"
-    };
+    try {
+      const result = await getFromKV(this.kvNamespace, "totalAccess");
+      return {
+        userid,
+        name: "test",
+        totalAccess: result
+      };
+    } catch (error) {
+      console.error("Error in getUser:", error);
+      return {
+        userid,
+        name: "test",
+        totalAccess: null
+      };
+    }
   }
   // POST /user
   async createUser(data) {
-    return {
-      code: 200
-    };
+    try {
+      return {
+        code: 200
+      };
+    } catch (e) {
+      console.error("Error in createUser:", e);
+      return {
+        code: 400
+      };
+    }
   }
 };
 var t = ({ base: e = "", routes: t2 = [], ...r2 } = {}) => ({ __proto__: new Proxy({}, { get: (r3, o2, a2, s2) => (r4, ...c2) => t2.push([o2.toUpperCase?.(), RegExp(`^${(s2 = (e + r4).replace(/\/+(\/|$)/g, "$1")).replace(/(\/?\.?):(\w+)\+/g, "($1(?<$2>*))").replace(/(\/?\.?):(\w+)/g, "($1(?<$2>[^$1/]+?))").replace(/\./g, "\\.").replace(/(\/?)\*/g, "($1.*)?")}/*$`), c2, s2]) && a2 }), routes: t2, ...r2, async fetch(e2, ...o2) {
@@ -59,27 +92,43 @@ var u = r("image/jpeg");
 var h = r("image/png");
 var g = r("image/webp");
 var userService = new UserService();
+var errorResponse = (message, status = 400) => {
+  return Response.json({ error: message }, { status });
+};
 var router = n();
 router.get("/user/:userid", async (request) => {
   const userid = request.params?.userid;
+  if (!userid || typeof userid !== "string") {
+    return errorResponse("User ID is required", 400);
+  }
   const result = await userService.getUser(userid);
   return Response.json(result);
 });
 router.post("/user", async (request) => {
   try {
     const body = await request.json();
+    if (!body || typeof body !== "object") {
+      return errorResponse("Invalid request body", 400);
+    }
+    if (!body.name || typeof body.name !== "string") {
+      return errorResponse("Name field is required and must be a string", 400);
+    }
     const result = await userService.createUser(body);
     return Response.json(result);
   } catch (error) {
-    return Response.json({ error: "Invalid JSON" }, { status: 400 });
+    return errorResponse("Invalid JSON", 400);
   }
 });
 router.get("/hello", () => {
   return Response.json({ hello: "esa" });
 });
 router.post("/message", async (request) => {
-  await request.json();
-  return Response.json({ code: 200 });
+  try {
+    await request.json();
+    return Response.json({ code: 200 });
+  } catch (error) {
+    return errorResponse("Invalid JSON", 400);
+  }
 });
 var index_default = {
   fetch: router.fetch
