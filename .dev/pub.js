@@ -13,6 +13,18 @@ async function getFromKV(kv, key) {
     throw error;
   }
 }
+async function putToKV(kv, key, data, options = {}) {
+  try {
+    const edgeKV = new EdgeKV({ namespace: kv });
+    let getType = { type: "text" };
+    let oldvalue = await edgeKV.get(key, getType);
+    let data2 = await edgeKV.put(key, Number(oldvalue) + 1);
+    console.alert("put data:", data2);
+  } catch (error) {
+    console.error(`Error putting key ${key} to KV:`, error);
+    throw error;
+  }
+}
 var UserService = class {
   kvNamespace = "web";
   // GET /user/{userid}
@@ -36,6 +48,8 @@ var UserService = class {
   // POST /user
   async createUser(data) {
     try {
+      const result = await putToKV(this.kvNamespace, "totalAccess", 1);
+      console.alert("put to kv:", result);
       return {
         code: 200
       };

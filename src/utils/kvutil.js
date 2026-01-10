@@ -33,8 +33,11 @@ export async function getFromKV(kv, key) {
  */
 export async function putToKV(kv, key, data, options = {}) {
   try {
-    const value = JSON.stringify(data);
-    await kv.put(key, value, options);
+    const edgeKV = new EdgeKV({ namespace: kv });
+    let getType = { type: "text" };
+    let oldvalue = await edgeKV.get(key, getType);
+    let data = await edgeKV.put(key, Number(oldvalue)+1);
+    console.alert("put data:",data)
   } catch (error) {
     console.error(`Error putting key ${key} to KV:`, error);
     throw error;
