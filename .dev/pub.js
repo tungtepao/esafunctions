@@ -16,11 +16,12 @@ async function getFromKV(kv, key) {
 }
 async function putDataToKv(kv, key, data, options = {}) {
   try {
+    console.alert("putDataToKv:", data);
     const edgeKV = new EdgeKV({ namespace: kv });
-    let putRespdata = await edgeKV.put(key, data);
+    let putRespdata = await edgeKV.put(key, JSON.stringify(data));
     console.alert("put data:", putRespdata);
   } catch (error) {
-    console.error(`Error putting key ${key} to KV:`, error);
+    console.alert(`Error putting key ${key} to KV:`, error);
     throw error;
   }
 }
@@ -47,7 +48,7 @@ var UserService = class {
   // POST /user
   async createUser(user) {
     try {
-      const result = await putDataToKv(this.kvNamespace, user.userid, 1);
+      const result = await putDataToKv(this.kvNamespace, user.userid, user);
       console.log("put to kv:", result);
       return {
         code: 200

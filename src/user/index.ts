@@ -69,7 +69,7 @@ export class UserService {
   async createUser(user: UserInfo): Promise<UserPostResponse> {
     try {
       // 这里可以添加实际的业务逻辑
-      const result = await putDataToKv(this.kvNamespace, user.userid, 1);
+      const result = await putDataToKv(this.kvNamespace, user.userid, user);
       console.log("put to kv:", result);
       return {
         code: 200

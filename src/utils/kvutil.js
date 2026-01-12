@@ -50,11 +50,12 @@ export async function putToKV(kv, key, data, options = {}) {
 */
 export async function putDataToKv(kv, key, data, options = {}) {
   try {
+    console.alert("putDataToKv:",data)
     const edgeKV = new EdgeKV({ namespace: kv });
-    let putRespdata = await edgeKV.put(key, data);
+    let putRespdata = await edgeKV.put(key, JSON.stringify(data));
     console.alert("put data:",putRespdata)
   } catch (error) {
-    console.error(`Error putting key ${key} to KV:`, error);
+    console.alert(`Error putting key ${key} to KV:`, error);
     throw error;
   }
 }
