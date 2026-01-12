@@ -86,6 +86,7 @@ export function getFromKV(kv: string, key: string): Promise<any>;
  * @param options - 可选配置（如 expirationTtl）
  */
 export function putToKV(kv: KVNamespace, key: string, data: any, options?: KVOptions): Promise<void>;
+export function putDataToKv(kv: KVNamespace, key: string, data: any, options?: KVOptions): Promise<void>;
 
 /**
  * 从 KV 命名空间删除数据

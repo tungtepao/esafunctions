@@ -13,6 +13,7 @@ export async function getFromKV(kv, key) {
     const edgeKV = new EdgeKV({ namespace: kv });
     let getType = { type: "text" };
     let value = await edgeKV.get(key, getType);
+    console.alert("get value from kv: key=",key,";value=",value)
     if (!value) {
       return null;
     }
@@ -38,6 +39,20 @@ export async function putToKV(kv, key, data, options = {}) {
     let oldvalue = await edgeKV.get(key, getType);
     let data = await edgeKV.put(key, Number(oldvalue)+1);
     console.alert("put data:",data)
+  } catch (error) {
+    console.error(`Error putting key ${key} to KV:`, error);
+    throw error;
+  }
+}
+
+/*
+序列化stringify后的数据保存到 KV 命名空间
+*/
+export async function putDataToKv(kv, key, data, options = {}) {
+  try {
+    const edgeKV = new EdgeKV({ namespace: kv });
+    let putRespdata = await edgeKV.put(key, data);
+    console.alert("put data:",putRespdata)
   } catch (error) {
     console.error(`Error putting key ${key} to KV:`, error);
     throw error;
